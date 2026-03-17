@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: car-rental-service
+
+  # ===== Database =====
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:carrental}
+    username: ${POSTGRES_USER:carrental}
+    password: ${POSTGRES_PASSWORD:changeme_in_production}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+# ===== Server =====
+server:
+  port: ${SERVER_PORT:8080}
+
+# ===== JWT =====
+app:
+  jwt:
+    secret: ${JWT_SECRET:your-256-bit-secret-change-this-in-production-minimum-32-chars!!}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+  # ===== Currency Converter =====
+  currency:
+    converter-url: ${CURRENCY_CONVERTER_URL:http://localhost:8000/currency?wsdl}
+    api-key: ${CURRENCY_CONVERTER_API_KEY:converter-secret-key}
+
+# ===== Actuator =====
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
