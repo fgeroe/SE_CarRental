@@ -60,6 +60,11 @@ public class SecurityConfig {
 
                         // Public car browsing
                         .requestMatchers(HttpMethod.GET, "/api/car/**").permitAll()
+                        // Booking - admin only paths
+                        .requestMatchers(HttpMethod.GET, "/api/bookings").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/confirm").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/complete").hasRole("ADMIN")
+                        // Booking - authenticated
                         .requestMatchers("/api/bookings/**").authenticated()
                         .requestMatchers("/api/currency/**").authenticated()
                         .anyRequest().authenticated()

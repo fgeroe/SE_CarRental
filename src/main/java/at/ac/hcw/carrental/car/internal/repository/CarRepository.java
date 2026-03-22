@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface CarRepository extends JpaRepository<CarEntity, UUID> {
     Optional<CarEntity> findByLicensePlate(String licensePlate);
     List<CarEntity> findAllByAvailableTrue();
+    List<CarEntity> findAllByAvailableTrueAndLocationIgnoreCase(String location);
     boolean existsByLicensePlate(String licensePlate);
 }

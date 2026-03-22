@@ -43,4 +43,24 @@ public class CarEntity {
     @Column(nullable = false)
     @Builder.Default
     private boolean available = true;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private int seats = 5;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Transmission transmission = Transmission.MANUAL;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private int largeLuggageSpace = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private int smallLuggageSpace = 0;
+
+    @Column
+    private String imageUrl;
 }

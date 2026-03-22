@@ -15,5 +15,10 @@ public class UpdateCarRequest {
     private BigDecimal dailyRate;
     private String location;
     private Boolean available;
+    private Integer seats;
+    private String transmission;
+    private Integer largeLuggageSpace;
+    private Integer smallLuggageSpace;
+    private String imageUrl;
 
 }

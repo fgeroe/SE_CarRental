@@ -1,6 +1,7 @@
 package at.ac.hcw.carrental.car.dto;
 
 import at.ac.hcw.carrental.car.internal.model.CarType;
+import at.ac.hcw.carrental.car.internal.model.Transmission;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -31,4 +32,19 @@ public class CreateCarRequest {
 
     @NotBlank(message = "Location is required")
     private String location;
+
+    @Min(value = 1, message = "Seats must be at least 1")
+    @Max(value = 9, message = "Seats cannot exceed 9")
+    private int seats;
+
+    @NotNull(message = "Transmission type is required")
+    private Transmission transmission;
+
+    @Min(value = 0, message = "Large luggage space cannot be negative")
+    private int largeLuggageSpace;
+
+    @Min(value = 0, message = "Small luggage space cannot be negative")
+    private int smallLuggageSpace;
+
+    private String imageUrl;
 }

@@ -1,6 +1,7 @@
 package at.ac.hcw.carrental.car.dto;
 
 import at.ac.hcw.carrental.car.internal.model.CarType;
+import at.ac.hcw.carrental.car.internal.model.Transmission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,11 +19,16 @@ public class CarResponse {
     private UUID id;
     private String brand;
     private String model;
-    private int  year;
+    private int year;
     private BigDecimal dailyRate;
     private String licensePlate;
     private CarType carType;
     private String location;
     private boolean available;
+    private int seats;
+    private Transmission transmission;
+    private int largeLuggageSpace;
+    private int smallLuggageSpace;
+    private String imageUrl;
 
 }

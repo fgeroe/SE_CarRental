@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,16 @@ public class CarController {
     @Operation(summary = "Get all cars including unavailable (Admin only)")
     public List<CarResponse> getAllCars() {
         return service.getAllCars();
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Search available cars by date range and optional location (public)")
+    public List<CarResponse> searchAvailableCars(
+            @RequestParam LocalDateTime pickupDateTime,
+            @RequestParam LocalDateTime returnDateTime,
+            @RequestParam(required = false) String location) {
+        return service.searchAvailableCars(pickupDateTime, returnDateTime, location);
     }
 
     @PatchMapping("/{carId}")
