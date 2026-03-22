@@ -37,6 +37,13 @@ public class CarController {
         return service.getAvailableCars();
     }
 
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all cars including unavailable (Admin only)")
+    public List<CarResponse> getAllCars() {
+        return service.getAllCars();
+    }
+
     @PatchMapping("/{carId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update information of a car")

@@ -39,7 +39,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/user/register").permitAll()
+                        .requestMatchers("/api/user/login").permitAll()
 
                         // Swagger / OpenAPI
                         .requestMatchers(
@@ -50,12 +51,15 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health").permitAll()
 
                         // Admin only
-                        .requestMatchers(HttpMethod.POST, "/api/cars").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/cars/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/car/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/car").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/car/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/car/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/car/**").hasRole("ADMIN")
 
-                        // Authenticated
-                        .requestMatchers(HttpMethod.GET, "/api/cars/**").authenticated()
+                        // Public car browsing
+                        .requestMatchers(HttpMethod.GET, "/api/car/**").permitAll()
                         .requestMatchers("/api/bookings/**").authenticated()
                         .requestMatchers("/api/currency/**").authenticated()
                         .anyRequest().authenticated()
@@ -80,7 +84,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);

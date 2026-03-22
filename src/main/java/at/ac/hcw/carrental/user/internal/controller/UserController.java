@@ -4,6 +4,8 @@ import at.ac.hcw.carrental.user.UserService;
 import at.ac.hcw.carrental.user.dto.AuthResponse;
 import at.ac.hcw.carrental.user.dto.LoginRequest;
 import at.ac.hcw.carrental.user.dto.RegisterRequest;
+import at.ac.hcw.carrental.user.dto.UserResponse;
+import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,6 +33,13 @@ public class UserController {
     @Operation(summary = "User login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request){
         return userService.login(request);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all users (Admin only)")
+    public List<UserResponse> getAllUsers(){
+        return userService.getAllUsers();
     }
 
 }

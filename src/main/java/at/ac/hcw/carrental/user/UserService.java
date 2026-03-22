@@ -4,10 +4,13 @@ import at.ac.hcw.carrental.shared.security.JwtTokenProvider;
 import at.ac.hcw.carrental.user.dto.AuthResponse;
 import at.ac.hcw.carrental.user.dto.LoginRequest;
 import at.ac.hcw.carrental.user.dto.RegisterRequest;
+import at.ac.hcw.carrental.user.dto.UserResponse;
+import at.ac.hcw.carrental.user.internal.mapper.UserMapper;
 import at.ac.hcw.carrental.user.internal.model.*;
 import at.ac.hcw.carrental.user.internal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +25,7 @@ public class UserService {
     private final JwtTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -75,5 +79,12 @@ public class UserService {
 
     public boolean existsByEmail(String email) {
         return repository.existsByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponse> getAllUsers() {
+        return repository.findAll().stream()
+                .map(userMapper::toResponse)
+                .toList();
     }
 }

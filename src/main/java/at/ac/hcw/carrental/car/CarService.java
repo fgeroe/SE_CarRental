@@ -51,6 +51,14 @@ public class CarService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<CarResponse> getAllCars(){
+        return repository.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
+
     @Transactional
     public CarResponse updateCar(UUID carId, UpdateCarRequest request) throws JsonMappingException {
 

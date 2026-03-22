@@ -28,6 +28,11 @@ app:
     secret: ${JWT_SECRET:your-256-bit-secret-change-this-in-production-minimum-32-chars!!}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
+  # ===== Super Admin Seeding =====
+  super-admin:
+    email: ${SUPER_ADMIN_EMAIL:admin@carrental.com}
+    password: ${SUPER_ADMIN_PASSWORD:admin123456}
+
   # ===== Currency Converter =====
   currency:
     converter-url: ${CURRENCY_CONVERTER_URL:http://localhost:8000/currency?wsdl}
