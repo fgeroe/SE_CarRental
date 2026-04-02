@@ -1,4 +1,4 @@
-package at.ac.hcw.carrental.car.internal.model;
+package at.ac.hcw.carrental.car.dto;
 
 public enum CarType {
     ECONOMY,

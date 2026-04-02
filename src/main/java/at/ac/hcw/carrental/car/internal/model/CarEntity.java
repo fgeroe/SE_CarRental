@@ -1,5 +1,6 @@
 package at.ac.hcw.carrental.car.internal.model;
 
+import at.ac.hcw.carrental.car.dto.CarType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,8 +40,4 @@ public class CarEntity {
 
     @Column(nullable = false)
     private String location;
-
-    @Column(nullable = false)
-    @Builder.Default
-    private boolean available = true;
 }

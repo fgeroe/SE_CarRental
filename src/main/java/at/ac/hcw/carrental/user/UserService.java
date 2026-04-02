@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -75,5 +77,11 @@ public class UserService {
 
     public boolean existsByEmail(String email) {
         return repository.existsByEmail(email);
+    }
+    public UUID getIdByMail(String email) {
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user.getId();
     }
 }

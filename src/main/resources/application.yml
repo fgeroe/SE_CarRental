@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:carrental}
     username: ${POSTGRES_USER:carrental}
-    password: ${POSTGRES_PASSWORD:changeme_in_production}
+    password: ${POSTGRES_PASSWORD:serviceEngineering26}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -17,10 +17,18 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  web:
+    error:
+      include-message: always
+      include-stacktrace: always
 
 # ===== Server =====
 server:
   port: ${SERVER_PORT:8080}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
 
 # ===== JWT =====
 app:
@@ -30,7 +38,7 @@ app:
 
   # ===== Currency Converter =====
   currency:
-    converter-url: ${CURRENCY_CONVERTER_URL:http://localhost:8000/currency?wsdl}
+    converter-url: ${CURRENCY_CONVERTER_URL:http://localhost:8000}
     api-key: ${CURRENCY_CONVERTER_API_KEY:converter-secret-key}
 
 # ===== Actuator =====

@@ -38,26 +38,26 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        // Swagger / OpenAPI
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
+                        .requestMatchers("/api/user/register").permitAll()
+                        .requestMatchers("/api/user/login").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
 
-                        // Admin only
-                        .requestMatchers(HttpMethod.POST, "/api/cars").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/cars/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/car").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/car/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/car/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/car/**").authenticated()
 
-                        // Authenticated
-                        .requestMatchers(HttpMethod.GET, "/api/cars/**").authenticated()
-                        .requestMatchers("/api/bookings/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/booking/*/assign").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/booking/*/return").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/booking/my").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/booking/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/booking").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/booking/*/cancel").authenticated()
+
                         .requestMatchers("/api/currency/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
