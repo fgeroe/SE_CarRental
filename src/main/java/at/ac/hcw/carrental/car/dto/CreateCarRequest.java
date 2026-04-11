@@ -1,6 +1,5 @@
 package at.ac.hcw.carrental.car.dto;
 
-import at.ac.hcw.carrental.car.internal.model.CarType;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 

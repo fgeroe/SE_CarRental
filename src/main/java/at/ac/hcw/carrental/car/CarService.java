@@ -1,17 +1,19 @@
 package at.ac.hcw.carrental.car;
 
-import at.ac.hcw.carrental.car.dto.CarResponse;
-import at.ac.hcw.carrental.car.dto.CreateCarRequest;
-import at.ac.hcw.carrental.car.dto.UpdateCarRequest;
+import at.ac.hcw.carrental.car.dto.*;
 import at.ac.hcw.carrental.car.internal.mapper.CarMapper;
 import at.ac.hcw.carrental.car.internal.model.CarEntity;
 import at.ac.hcw.carrental.car.internal.repository.CarRepository;
+import at.ac.hcw.carrental.currency.CurrencyService;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +24,7 @@ public class CarService {
     private final CarRepository repository;
     private final CarMapper mapper;
     private final ObjectMapper patchMapper;
+    private final CurrencyService currencyService;
 
     @Transactional
     public CarResponse create(CreateCarRequest request){
@@ -44,8 +47,8 @@ public class CarService {
     }
 
     @Transactional(readOnly = true)
-    public List<CarResponse> getAvailableCars(){
-        return repository.findAllByAvailableTrue()
+    public List<CarResponse> getCarsByTypeAndLocation(CarType type, String location){
+        return repository.findByCarTypeAndLocation(type, location)
                 .stream()
                 .map(mapper::toResponse)
                 .toList();
@@ -60,6 +63,67 @@ public class CarService {
         patchMapper.updateValue(entity, request);
 
         return mapper.toResponse(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CarResponse> getAllCars(){
+        return repository.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public void deleteCar(UUID carId){
+        if (repository.existsById(carId)){
+            repository.deleteById(carId);
+        } else  {
+            throw new IllegalArgumentException("Car with id " + carId + " does not exist");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public CarPriceResponse getCarPrice(UUID carId, LocalDate startDate, LocalDate endDate, String currency){
+
+        CarEntity entity = repository.findById(carId)
+                .orElseThrow(() -> new IllegalArgumentException("Car with id " + carId + " does not exist"));
+
+        if(startDate.isAfter(endDate)){
+            throw new IllegalArgumentException("Start date cannot be after the end date");
+        }
+
+        long days = ChronoUnit.DAYS.between(startDate, endDate);
+        if (days <= 0) days = 1;
+
+        BigDecimal dailyRate = currency.equals("USD") ? entity.getDailyRate() : currencyService.convertDailyRate(entity.getDailyRate(), currency);
+        BigDecimal price = dailyRate.multiply(BigDecimal.valueOf(days));
+
+        return CarPriceResponse.builder()
+                .carId(carId)
+                .startDate(startDate)
+                .endDate(endDate)
+                .days(days)
+                .dailyRate(dailyRate)
+                .price(price)
+                .currency(currency)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public CarResponse getCar(UUID carId){
+
+        CarEntity entity = repository.findById(carId)
+                .orElseThrow(() -> new IllegalArgumentException("Car with id " + carId + " does not exist"));
+
+        return mapper.toResponse(entity);
+    }
+
+    public BigDecimal getCheapestDailyRate(CarType type, String location) {
+        return repository.findByCarTypeAndLocation(type, location)
+                .stream()
+                .map(CarEntity::getDailyRate)
+                .min(BigDecimal::compareTo)
+                .orElseThrow(() -> new IllegalArgumentException("No cars found for type " + type));
     }
 
 }
