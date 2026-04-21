@@ -40,4 +40,17 @@ public class CarEntity {
 
     @Column(nullable = false)
     private String location;
+
+    @Column(nullable = false)
+    private Integer seats;
+
+    private TransmissionType transmissionType;
+
+    private Integer largeLuggage;
+    private Integer smallLuggage;
+
+    public enum TransmissionType{
+        AUTOMATIC,
+        MANUAL
+    }
 }

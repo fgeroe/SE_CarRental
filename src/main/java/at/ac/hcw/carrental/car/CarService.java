@@ -41,6 +41,10 @@ public class CarService {
                 .year(request.getYear())
                 .dailyRate(request.getDailyRate())
                 .location(request.getLocation())
+                .seats(request.getSeats())
+                .transmissionType(request.getTransmissionType())
+                .largeLuggage(request.getLargeLuggage())
+                .smallLuggage(request.getSmallLuggage())
                 .build();
 
         return mapper.toResponse(repository.save(entity));

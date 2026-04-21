@@ -1,5 +1,6 @@
 package at.ac.hcw.carrental.car.dto;
 
+import at.ac.hcw.carrental.car.internal.model.CarEntity;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -30,4 +31,19 @@ public class CreateCarRequest {
 
     @NotBlank(message = "Location is required")
     private String location;
+
+    @Min(value = 1)
+    @Max(value = 8)
+    private Integer seats;
+
+    @NotBlank
+    private CarEntity.TransmissionType transmissionType;
+
+    @Positive
+    @Max(value = 5)
+    private Integer largeLuggage;
+
+    @Positive
+    @Max(value = 10)
+    private Integer smallLuggage;
 }
