@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http){
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -47,10 +47,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/car").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/car/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/car/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/car/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/car/**").permitAll()
 
                         .requestMatchers(HttpMethod.PUT, "/api/booking/*/assign").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/booking/*/return").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/booking").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/booking/my").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/booking/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/booking").authenticated()

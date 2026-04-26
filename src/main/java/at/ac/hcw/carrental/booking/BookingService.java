@@ -138,4 +138,13 @@ public class BookingService {
 
         return mapper.toResponse(entity);
     }
+
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getAllBookings() {
+        List<BookingEntity> entities = repository.findAllByStatusIn(List.of(BookingStatus.ACTIVE, BookingStatus.RESERVED));
+        return entities
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
 }

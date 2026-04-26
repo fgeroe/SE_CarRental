@@ -66,4 +66,10 @@ public class BookingController {
             @AuthenticationPrincipal UserDetails userDetails) {
         return service.changeStatus(bookingId, BookingStatus.CANCELLED, userDetails.getUsername());
     }
+
+    @GetMapping
+    @Operation(summary = "Get all bookings")
+    public List<BookingResponse> getAllBookings() {
+        return service.getAllBookings();
+    }
 }
