@@ -1,5 +1,7 @@
 package at.ac.hcw.carrental.user;
 
+import at.ac.hcw.carrental.shared.exception.DuplicateResourceException;
+import at.ac.hcw.carrental.shared.exception.ResourceNotFoundException;
 import at.ac.hcw.carrental.shared.security.JwtTokenProvider;
 import at.ac.hcw.carrental.user.dto.AuthResponse;
 import at.ac.hcw.carrental.user.dto.LoginRequest;
@@ -8,6 +10,7 @@ import at.ac.hcw.carrental.user.internal.model.*;
 import at.ac.hcw.carrental.user.internal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +32,7 @@ public class UserService {
     public AuthResponse register(RegisterRequest request) {
 
         if(repository.existsByEmail(request.getEmail())){
-            throw new IllegalArgumentException("Email already exists");
+            throw new DuplicateResourceException("Email already exists");
         }
 
         UserEntity user = UserEntity.builder()
@@ -60,7 +63,7 @@ public class UserService {
     public AuthResponse login(LoginRequest request) {
 
         UserEntity user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -80,7 +83,7 @@ public class UserService {
     }
     public UUID getIdByMail(String email) {
         UserEntity user = repository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return user.getId();
     }
