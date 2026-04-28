@@ -19,8 +19,10 @@ spring:
         format_sql: true
   web:
     error:
-      include-message: always
-      include-stacktrace: always
+      include-message: never
+      include-stacktrace: never
+      include-binding-errors: never
+      include-exception: false
 
 # ===== Server =====
 server:

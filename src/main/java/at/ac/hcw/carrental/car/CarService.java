@@ -5,6 +5,9 @@ import at.ac.hcw.carrental.car.internal.mapper.CarMapper;
 import at.ac.hcw.carrental.car.internal.model.CarEntity;
 import at.ac.hcw.carrental.car.internal.repository.CarRepository;
 import at.ac.hcw.carrental.currency.CurrencyService;
+import at.ac.hcw.carrental.shared.exception.DuplicateResourceException;
+import at.ac.hcw.carrental.shared.exception.InvalidRequestException;
+import at.ac.hcw.carrental.shared.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +33,7 @@ public class CarService {
     public CarResponse create(CreateCarRequest request){
 
         if(repository.existsByLicensePlate(request.getLicensePlate())){
-            throw new IllegalArgumentException("Duplicate license plates not allowed");
+            throw new DuplicateResourceException("Duplicate license plates not allowed");
         }
 
         CarEntity entity = CarEntity.builder()
@@ -62,7 +65,7 @@ public class CarService {
     public CarResponse updateCar(UUID carId, UpdateCarRequest request) throws JsonMappingException {
 
         CarEntity entity = repository.findById(carId)
-                .orElseThrow(() -> new IllegalArgumentException("Car with id " + carId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Car with id " + carId + " does not exist"));
 
         patchMapper.updateValue(entity, request);
 
@@ -82,7 +85,7 @@ public class CarService {
         if (repository.existsById(carId)){
             repository.deleteById(carId);
         } else  {
-            throw new IllegalArgumentException("Car with id " + carId + " does not exist");
+            throw new ResourceNotFoundException("Car with id " + carId + " does not exist");
         }
     }
 
@@ -90,10 +93,10 @@ public class CarService {
     public CarPriceResponse getCarPrice(UUID carId, LocalDate startDate, LocalDate endDate, String currency){
 
         CarEntity entity = repository.findById(carId)
-                .orElseThrow(() -> new IllegalArgumentException("Car with id " + carId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Car with id " + carId + " does not exist"));
 
         if(startDate.isAfter(endDate)){
-            throw new IllegalArgumentException("Start date cannot be after the end date");
+            throw new InvalidRequestException("Start date cannot be after the end date");
         }
 
         long days = ChronoUnit.DAYS.between(startDate, endDate);
@@ -117,7 +120,7 @@ public class CarService {
     public CarResponse getCar(UUID carId){
 
         CarEntity entity = repository.findById(carId)
-                .orElseThrow(() -> new IllegalArgumentException("Car with id " + carId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Car with id " + carId + " does not exist"));
 
         return mapper.toResponse(entity);
     }
@@ -127,7 +130,7 @@ public class CarService {
                 .stream()
                 .map(CarEntity::getDailyRate)
                 .min(BigDecimal::compareTo)
-                .orElseThrow(() -> new IllegalArgumentException("No cars found for type " + type));
+                .orElseThrow(() -> new ResourceNotFoundException("No cars found for type " + type));
     }
 
 }

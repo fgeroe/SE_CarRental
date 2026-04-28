@@ -1,5 +1,6 @@
 package at.ac.hcw.carrental.currency.internal;
 
+import at.ac.hcw.carrental.shared.exception.ExternalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -130,22 +131,22 @@ public class SoapCurrencyClient {
                     : conn.getErrorStream();
 
             if (is == null) {
-                throw new RuntimeException("Currency converter returned status "
-                        + responseCode + " with no response body");
+                throw new ExternalServiceException(
+                        "Currency converter returned status " + responseCode + " with no response body");
             }
 
             String responseBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 
             if (responseCode >= 300) {
                 log.error("SOAP request failed with status {}: {}", responseCode, responseBody);
-                throw new RuntimeException("Currency converter returned status " + responseCode);
+                throw new ExternalServiceException("Currency converter returned status " + responseCode);
             }
 
             return responseBody;
 
         } catch (IOException e) {
             log.error("Failed to connect to currency converter at {}", serviceUrl, e);
-            throw new RuntimeException("Currency converter unavailable", e);
+            throw new ExternalServiceException("Currency converter unavailable", e);
         }
     }
 
@@ -167,7 +168,7 @@ public class SoapCurrencyClient {
 
         } catch (Exception e) {
             log.error("Failed to parse ConvertCurrency response", e);
-            throw new RuntimeException("Failed to parse currency conversion response", e);
+            throw new ExternalServiceException("Failed to parse currency conversion response", e);
         }
     }
 
@@ -189,7 +190,7 @@ public class SoapCurrencyClient {
 
         } catch (Exception e) {
             log.error("Failed to parse GetSupportedCurrencies response", e);
-            throw new RuntimeException("Failed to parse supported currencies response", e);
+            throw new ExternalServiceException("Failed to parse supported currencies response", e);
         }
     }
 
@@ -206,7 +207,7 @@ public class SoapCurrencyClient {
 
         } catch (Exception e) {
             log.error("Failed to parse GetRateMetadata response", e);
-            throw new RuntimeException("Failed to parse rate metadata response", e);
+            throw new ExternalServiceException("Failed to parse rate metadata response", e);
         }
     }
 
